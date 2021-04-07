@@ -1,0 +1,6 @@
+{
+    "_comment": "path: chemin vers le dossier de log, boxName: nom du site suivi de son numéro, aveva: chemin vers le projet AVEVA-",
+    "path": "C:\\Users\\admin\\Desktop\\BBMS_Logs",
+    "boxName": "chapelle41",
+    "aveva": "C:\\Users\\admin\\Desktop\\ProjetAveva"
+}
