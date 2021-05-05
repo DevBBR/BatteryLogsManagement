@@ -69,7 +69,7 @@ def renameLogsDir():
             for file in files:
                 if file.startswith("GridBSM_Bank1"):
                     os.rename(root+"\\"+file, root+"\\"+name+"_"+file)
-                elif not file.startswith("GridBSM_Event"):
+                elif not file.startswith("GridBSM_Event") and not file.startswith(name):
                     os.remove(root+"\\"+file)
             #os.rename(root, root.strip(dir)+"\\"+name+"_"+dir.strip("\\"))
 
@@ -87,7 +87,7 @@ def getConfig(param):
         data = json.load(file)
         return data[param]
 
-def logsOverThreeMonths():
+def logsOverDate(nbDays):
     """Récupère les noms des dossiers de logs antérieures à 3 mois par rapport à la date courante
 
     Returns:
@@ -96,7 +96,7 @@ def logsOverThreeMonths():
     okdirs = []
     path = getConfig("path")
     name = getConfig("boxName")
-    date = getDate(90)
+    date = getDate(nbDays)
     i = 0
     for root, dirs, files in os.walk(path):
         if not i:
@@ -158,6 +158,10 @@ def cleanLogDir(dir, pathBank, pathRack):
     name = getConfig("boxName")
     path = getConfig("path")
     _, _, files = next(os.walk(dir))
+    print(files)
+    if files[0].startswith("GridBSM"):
+        renameLogsDir()
+        _, _, files = next(os.walk(dir))
     countLinesBank = 0
     countLinesRack = 0
     for file in files:
@@ -166,7 +170,7 @@ def cleanLogDir(dir, pathBank, pathRack):
         elif file.startswith(name+"_GridBSM_Bank1Racks_"):
             countLinesRack = addMinutesRow(dir+"\\"+file, pathRack, countLinesRack)
 
-        if not file.startswith("GridBSM_Event") and not file.startswith(dir.strip(path)):
+        if not file.startswith("GridBSM_Event") and not file.startswith(dir.strip(path)) and not file.startswith(name+"_"+dir.strip(path)):
             os.remove(dir+"\\"+file)
 
 def checkErrorsOnFile(file, count):
@@ -229,11 +233,11 @@ def checkPreviousDay():
     _, _, files = next(os.walk(newPath))
     print(files)
     for file in files:
-        if file.startswith("GridBSM_Bank1_"):
+        if file.startswith("GridBSM_Bank1_") or file.startswith(name+"_GridBSM_Bank1_"):
             errors["noLogFiles"] = 0
             countLines, fault = checkErrorsOnFile(newPath+"\\"+file, countLines)
             nbFault += fault
-        if not file.startswith("GridBSM_Event"):
+        if not file.startswith("GridBSM_Event") and not file.startswith(name):
             os.rename(newPath+"\\"+file, newPath+"\\"+name+"_"+file)
     if countLines < 82800:
         errors["notEnoughLines"] = 1

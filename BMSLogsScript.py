@@ -7,10 +7,11 @@ Traite les erreurs du dossier de la veille
 
 name = bms.getConfig("boxName")
 path = bms.getConfig("path")
-dirs = bms.logsOverThreeMonths()
+"""Passez en paramètre le nombre de jour avec les secondes à conserver (90 = 3 mois)"""
+dirs = bms.logsOverDate(90)
 for dir in dirs:
-    pathBank = dir+"\\"+dir.strip(path)+"_"+name+"_BBMS_Bank1_minutes.csv"
-    pathRack = dir+"\\"+dir.strip(path)+"_"+name+"_BBMS_Bank1_Racks_minutes.csv"
+    pathBank = dir+"\\"+name+"_"+dir.strip(path)+"_BBMS_Bank1_minutes.csv"
+    pathRack = dir+"\\"+name+"_"+dir.strip(path)+"_BBMS_Bank1_Racks_minutes.csv"
     bms.cleanLogDir(dir, pathBank, pathRack)
 
 errors = bms.checkPreviousDay()
